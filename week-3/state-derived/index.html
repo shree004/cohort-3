@@ -1,0 +1,43 @@
+<body>
+    <input type="text"></input>
+    <button onclick="addTodo()">AddTodo!</button>
+    <script>
+        let todos=[];
+        function addTodo(){
+            todos.push({
+                title:document.querySelector("input").value
+            })
+            render();
+        }
+        function deleteTodo(index){
+            todos.splice(index, 1); // Remove the todo at the given index
+            render();
+        }
+        
+        function updateTodo(index){
+            const newTitle = prompt("Enter new title:", todos[index].title); // Prompt for a new title
+            if (newTitle !== null && newTitle.trim() !== "") {
+                todos[index].title = newTitle; // Update the title
+            }
+            render();
+        }
+
+
+        function render(){
+            const existingTodos=document.querySelectorAll(".todo");
+            existingTodos.forEach((todoEl)=>{
+                todoEl.parentNode.removeChild(todoEl);
+            });
+            todos.forEach((todo,index)=>{
+                const newDivEl=document.createElement("div");
+                newDivEl.classList.add("todo");
+                newDivEl.innerHTML=`
+                    <div>${todo.title}</div>
+                    <button onclick="deleteTodo(${index})">Delete</button>
+                    <button onclick="updateTodo(${index})">Update</button>
+                `;
+                document.querySelector("body").appendChild(newDivEl);
+            });
+        }
+     </script>
+</body>

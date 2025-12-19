@@ -1,0 +1,15 @@
+[
+  {
+    "user": "john",
+    "todo": [
+      {
+        "title": "go to pray",
+        "completed": false
+      }
+    ]
+  },
+  {
+    "user": "john walton",
+    "todo": []
+  }
+]

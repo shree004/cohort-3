@@ -1,0 +1,30 @@
+<DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>replit</title>
+        <link href="style.css" rel="stylesheet"/>
+    </head>
+    <body>
+        <input type="text" id="input"></input>
+        <button onclick="AddTodo()">Add todo!</button>
+    </body>
+    <script >
+        let ctr=1;
+        function deleteTodo(index){
+            const divEl=document.getElementById(index);
+            divEl.parentNode.removeChild(divEl);
+        }
+        function AddTodo(){
+            const inputEl=document.querySelector("input");
+            const value=inputEl.value;
+
+            const newDivEl=document.createElement("div");
+            newDivEl.setAttribute("id","todo-"+ctr);
+            newDivEl.innerHTML='<div>'+value+'</div><button onclick="deleteTodo(\'todo-'+ctr+'\')">Delete</button>';
+            ctr+=1;
+            document.querySelector("body").appendChild(newDivEl);
+        }
+    </script>
+</html>
