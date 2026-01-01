@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todos-App</title>
+</head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+<body>
+    <div class="signup-form">
+        SignUP
+        <input type="text" id="user-1" placeholder="username">
+        <input type="password" id="pass-1" placeholder="password">
+        <input type="email" id="email-1" placeholder="email">
+        <button id="signup-btn" onclick="signUp()">Sign Up</button>
+    </div>
+    <div class="login-form">
+        Login
+        <input type="text" id="email-2" placeholder="email">
+        <input type="password" id="pass-2" placeholder="password">
+        <button id="login-btn" onclick="signIn()">Login</button>
+    </div>
+    <div class="todo-form">
+        Add Todo
+        <input type="text" id="todo-text" placeholder="todo text">
+        <button id="add-todo-btn" onclick="addTodo()">Add Todo</button>
+    </div>
+    <div class="todos-list">
+        <h3>Your Todos:</h3>
+        <div id="todos-container"></div>
+    </div>
+    <script>
+        async function signUp(){
+            const username = document.getElementById("user-1").value;
+            const password = document.getElementById("pass-1").value;
+            const email = document.getElementById("email-1").value;
+            const res = await axios.post("http://localhost:3000/signup", {
+                name : username,
+                password : password,
+                email : email
+            });
+            console.log(res.data);
+        }
+
+        async function signIn(){
+            const email = document.getElementById("email-2").value;
+            const password = document.getElementById("pass-2").value;
+            const res = await axios.post("http://localhost:3000/login", {
+                email : email,
+                password : password
+            });
+            const data = res.data;
+            localStorage.setItem("token", data.token);
+            fetchTodos();
+        }
+        async function addTodo(){
+            const todoText = document.getElementById("todo-text").value;
+            const token = localStorage.getItem("token");
+            const res = await axios.post("http://localhost:3000/todo", {
+                title : todoText
+            }, {
+                headers : {
+                    token : token
+                }
+            });
+            console.log(res.data);
+            fetchTodos();
+        }
+        async function fetchTodos(){
+            const token=localStorage.getItem("token");
+            const res = await axios.get("http://localhost:3000/todos", {
+                headers : {
+                    token : token
+                }
+            });
+            const todos =res.data.todos;
+            const todosContainer = document.getElementById("todos-container");
+            todosContainer.innerHTML = "";
+            todos.forEach((todo)=>{
+                const todoDiv = document.createElement("div");
+                todoDiv.innerText = todo.title + " - " + (todo.done ? "Done" : "Not Done");
+                const toggleBtn = document.createElement("button");
+                toggleBtn.innerText = "Toggle Done";
+                toggleBtn.onclick = async function(){
+                    await axios.put(`http://localhost:3000/todo/${todo._id}`, {
+                        done : !todo.done
+                    }, {
+                        headers : {
+                            token : token
+                        }
+                        }
+                    );
+                    fetchTodos();
+                };
+                const deleteBtn = document.createElement("button");
+                deleteBtn.innerText = "Delete";
+                deleteBtn.onclick = async function(){
+                    await axios.delete(`http://localhost:3000/todo/${todo._id}`, {
+                        headers : {
+                            token : token
+                        }
+                    });
+                    fetchTodos();
+                };
+                todoDiv.appendChild(toggleBtn);
+                todoDiv.appendChild(deleteBtn);
+                todosContainer.appendChild(todoDiv);
+            });
+        }
+    </script>
+</body>
+</html>

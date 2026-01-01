@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TODOS</title>
+</head>
+<script>
+    let ctr=0;
+    function addTask(){
+        const inputValue = document.querySelector('#input-value').value;
+        const spanElement = document.createElement('span');
+        const delButtonElement = document.createElement('button');
+        const doneButtonElement = document.createElement('button');
+        spanElement.innerHTML=inputValue.value;
+        delButtonElement.setAttribute('onclick','delTask( "todo -'+ ctr + '")');
+        doneButtonElement.setAttribute('onclick','doneTask( "todo -'+ ctr + '")');
+        const newDivEl = document.createElement('div');
+        newDivEl.setAttribute('id','todos - '+ ctr);
+        newDivEl.appendChild(spanElement);
+        newDivEl.appendChild(delButtonElement);
+        newDivEl.appendChild(doneButtonElement);
+    }
+
+    function delTask(task){
+        const todoItem = document.getElementById(task);
+        todoItem.parentNode.removeChild(todoItem);
+    }
+</script>
+<body>
+    <input type="text" id="input-value">
+    <button id="add-task" onclick="addTask()">ADD TASK</button>
+</body>
+</html>
